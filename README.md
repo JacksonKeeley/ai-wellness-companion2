@@ -17,7 +17,10 @@ Open your browser and go to: http://localhost:3000/motivation
 
 🚀 **Enjoy the positivity!** add some information about the updated version
 
-A more advanced **Node.js API** that provides users with **motivational quotes, daily affirmations, and guided breathing exercises** to promote mental well-being.
+
+
+
+## A more advanced **Node.js API** that provides users with **motivational quotes, daily affirmations, and guided breathing exercises** to promote mental well-being.
 
 ---
 
