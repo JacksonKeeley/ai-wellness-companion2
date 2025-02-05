@@ -1,0 +1,31 @@
+{
+  "name": "ai-wellness-companion2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "echo 'No build step specified' && exit 0",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JacksonKeeley/ai-wellness-companion2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JacksonKeeley/ai-wellness-companion2/issues"
+  },
+  "homepage": "https://github.com/JacksonKeeley/ai-wellness-companion2#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "directories": {
+    "test": "tests"
+  }
+}
