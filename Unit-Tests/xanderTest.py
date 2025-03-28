@@ -1,15 +1,16 @@
-#Credit to Jesse for the base code. Sorry if it feels like stealing, but is it not similar code either way?
+#Credit to whoever made the analytics test. I did it wrong!
 
 import unittest
-from getAffirmation import getAffirmation
+import requests
+
+BASE_URL = "http://localhost:4000"
 
 class testGetAffirmation(unittest.TestCase):
-    def setUp(self):
-        self.affirmation = getAffirmation()
-    
+
+    @classmethod
     def test_getAffirmation(self):
-        quote1 = self.affirmation.getAffirmation()
-        quote2 = self.affirmation.getAffirmation()
+        quote1 = requests.get(f"{BASE_URL}/affirmation")
+        quote2 = requests.get(f"{BASE_URL}/affirmation")
         
         self.assertTrue(quote1, str, "Returned quote should be a string")
         self.assertTrue(len(quote1), 0, "Returned quote should not be empty")
