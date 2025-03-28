@@ -3,7 +3,16 @@ from unittest.mock import patch
 import random
 
 # Arrays for tips and repeats
-DailyTips = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+DailyTips = ["Practice Gratitude: Keep a journal to track three things you're grateful for and three achievements daily. Reflecting on positive aspects of your life can enhance happiness",
+            "Exercise Regularly: Aim for at least 30 minutes of physical activity daily, such as walking or yoga. Exercise reduces stress hormones and boosts mood-enhancing chemicals like serotonin",
+            "Prioritize Sleep: Establish a consistent sleep routine and avoid screens before bedtime to improve sleep quality. Sleep is essential for emotional regulation and mental clarity", 
+            "Eat a Balanced Diet: Incorporate omega-3s, fruits, vegetables, and whole grains into your meals while reducing processed foods and refined sugars. Nutrition directly impacts mood and brain health", 
+            "Connect with Others: Build strong relationships by spending time with friends, family, or community groups. Social connections improve emotional resilience and overall well-being", 
+            "Take Breaks from Technology: Schedule tech-free periods to reduce stress and focus on face-to-face interactions or hobbies like reading or painting", 
+            "Practice Mindfulness: Engage in mindfulness exercises such as meditation or deep breathing to stay present and calm during stressful moments", 
+            "Engage in Meaningful Activities: Pursue hobbies or creative outlets that bring joy and purpose, like cooking, gardening, or volunteering", 
+            "Give Back to Others: Acts of kindness—whether volunteering or expressing gratitude—can create positive feelings and foster a sense of purpose", 
+            "Spend Time in Nature: Take daily walks outdoors or relax in natural settings to reduce stress and boost energy levels"]
 Repeatarray = []
 
 def random_element():
