@@ -5,6 +5,18 @@ const PORT = process.env.PORT || 4000;
 // Middleware for JSON requests
 app.use(express.json());
 
+const requestCount = {};
+
+// Middleware to track route usage
+app.use((req, res, next) => {
+    const route = req.path;
+    if (route !== "/analytics") {
+        requestCount[route] = (requestCount[route] || 0) + 1;
+        console.log(`Route ${route} accessed ${requestCount[route]} times.`);
+    }
+    next();
+});
+
 // Sample data for different wellness features
 const quotes = [
     "Believe in yourself!",
@@ -48,6 +60,19 @@ app.get('/affirmation', (req, res) => {
 app.get('/breathing', (req, res) => {
     res.json({ exercise: breathingExercise() });
 });
+
+// API route: Fetch analytics
+app.get('/analytics', (req, res) => {
+    res.json({ usage: requestCount });
+});
+
+// API route: Reset analytics data
+app.post('/reset-analytics', (req, res) => {
+    Object.keys(requestCount).forEach(route => delete requestCount[route]); // Remove all keys
+    console.log("Analytics reset.");
+    res.json({ message: "Analytics reset successfully." });
+});
+
 
 // Start the server
 app.listen(PORT, () => console.log(`🚀 Wellness API running on port ${PORT}`));
