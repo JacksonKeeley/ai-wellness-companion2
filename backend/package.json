@@ -6,8 +6,7 @@
   "scripts": {
     "test": "jest --passWithNoTests",
     "build": "echo 'No build step specified' && exit 0",
-    "start": "node server.js",
-"start": "node wellnessApp.js"
+    "start": "node wellnessApp.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +21,7 @@
   "homepage": "https://github.com/JacksonKeeley/ai-wellness-companion2#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
