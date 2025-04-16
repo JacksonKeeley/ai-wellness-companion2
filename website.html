@@ -396,9 +396,7 @@
   }
 
   function displayEntries() {
-    elements.journalEntries.innerHTML = journalEntries.length 
-      ? "" 
-      : "<p style='color: #666;'>No entries yet. Write your first journal entry above!</p>";
+    elements.journalEntries.innerHTML = "";
     
     journalEntries.slice().reverse().forEach(e => {
       elements.journalEntries.innerHTML += `
