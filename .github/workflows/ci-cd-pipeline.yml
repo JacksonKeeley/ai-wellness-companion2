@@ -19,6 +19,9 @@ jobs:
       - name: List project files (Debugging Step)
         run: ls -la
 
+      - name: Change directory to backend
+        run: cd backend
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
