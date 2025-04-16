@@ -1,72 +1,110 @@
 # AI Wellness Companion 🧘‍♂️✨
-A simple Node.js API that provides random motivational quotes.
 
-## 🚀 How to Run
-
-1. **Install dependencies:**
-2. **Start the server:**
-3. **Get a motivational quote:**
-Open your browser and go to: http://localhost:3000/motivation
-
-## 📌 Features
-- Provides **random motivational quotes**.
-- Built with **Node.js + Express**.
-- Easy to deploy and extend.
+An advanced full-stack app designed to promote emotional wellness with **motivational quotes**, **daily affirmations**, **guided breathing exercises**, and an **AI-powered journaling system**.
 
 ---
 
-🚀 **Enjoy the positivity!** add some information about the updated version
+## 🧩 Project Structure
 
-
-
-
-## A more advanced **Node.js API** that provides users with **motivational quotes, daily affirmations, and guided breathing exercises** to promote mental well-being.
+```
+/frontend   → Next.js 15 + React 19 + Tailwind v4 + ShadCN UI (Web App)
+/backend    → Node.js + Express (API for quotes, affirmations, and exercises)
+/deprecated → Old files used for reference that are no longer in production use
+```
 
 ---
 
-## 🚀 How to Run the Project (Step by Step)
+## 🚀 How to Run the Project
 
-### **1️⃣ Clone the Repository**
-First, open a terminal or command prompt and clone the repository from GitHub:
- git clone https://github.com/your-username/ai-wellness-companion2.git
+### 🔧 1. Clone the Repository
 
-Then, move into the project directory:
-cd ai-wellness-companion2
+```bash
+git clone https://github.com/your-username/ai-wellness-companion.git
+cd ai-wellness-companion
+```
 
+---
+
+### 🖥️ 2. Start the Backend
+
+```bash
+cd backend
 npm install
-
-This will install:
-
-express (Web framework)
-dotenv (For environment variables)
-nodemon (For automatic restarts in development)
-concurrently (For running multiple scripts)
-pm2 (For process management in production)
-
-If you need to install them manually, run: npm install express dotenv nodemon concurrently pm2
-
-To start the API, run:
 npm start
+```
 
-or, if you want automatic restarts during development:
-npx nodemon wellnessApp.js
+The backend will start on: [http://localhost:4000](http://localhost:4000)
 
-For production use, you can start it with pm2:
-pm2 start wellnessApp.js
+**Available routes:**
+| Route         | Description                      |
+|---------------|----------------------------------|
+| `/motivation` | Get a random motivational quote  |
+| `/affirmation`| Get a daily affirmation          |
+| `/breathing`  | Get a breathing exercise guide   |
+| `/analytics`  | View request analytics           |
+| `/reset-analytics` | Reset analytics counters   |
 
-Once the server is running, you can access the API in your browser or use Postman.
-/motivation	Get a random motivational quote	http://localhost:4000/motivation
-/affirmation	Get a daily affirmation	http://localhost:4000/affirmation
-/breathing	Get a breathing exercise guide	http://localhost:4000/breathing
 
-If you need to stop the server:
-Press CTRL + C in the terminal.
+If you want automatic restarts during development: `npx nodemon wellnessApp.js`
 
-If using pm2, stop it with:
-pm2 stop wellnessApp.js
+For production use, you can start it with pm2: `pm2 start wellnessApp.js`
 
-🛠️ Built With
-Node.js – JavaScript runtime.
-Express.js – Fast and minimal backend framework.
-JavaScript – Core language for this project.
+If you need to stop the server: Press CTRL + C in the terminal.
 
+If using pm2, stop it with: `pm2 stop wellnessApp.js`
+
+---
+
+### 🌐 3. Start the Frontend
+
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+
+The frontend will start on: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## ✨ Features
+
+- Motivational Quotes  
+- Daily Affirmations  
+- Breathing Exercise Guide  
+- SmartJournal with emotion analysis  
+- Emotion summaries and usage analytics  
+- Frosted-glass UI with ShadCN and Tailwind  
+- Full React 19 + App Router + Server Actions compatible  
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend:
+- **Next.js 15 (App Router)**
+- **React 19**
+- **Tailwind CSS v4**
+- **ShadCN UI**
+- **TypeScript**
+
+### Backend:
+- **Node.js**
+- **Express.js**
+
+---
+
+## 🧠 Future Add-ons
+- HuggingFace Emotion API integration
+- OAuth 2.0 login
+- Persistent journaling with PostgreSQL
+
+---
+
+## 🚦 Troubleshooting
+
+- **Ports Conflicting**? Make sure port `4000` is free or update in both frontend and backend configs.
+
+---
+
+🚀 Enjoy the positivity! 
