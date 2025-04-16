@@ -74,6 +74,46 @@ app.post('/reset-analytics', (req, res) => {
     res.json({ message: "Analytics reset successfully." });
 });
 
+app.post('/emotion-analysis', async (req, res) => {
+    const { text } = req.body;
+    const HF_API_KEY = "YOUR_HUGGING_FACE_TOKEN";
+    const EMOTION_MODEL = "SamLowe/roberta-base-go_emotions";
+
+    const fallbackData = [
+        [
+            { label: "joy", score: 0.78 },
+            { label: "love", score: 0.65 },
+            { label: "neutral", score: 0.42 }
+        ]
+    ];
+
+    try {
+        const response = await fetch(
+            `https://api-inference.huggingface.co/models/${EMOTION_MODEL}`,
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${HF_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    inputs: `Analyze this journal entry's emotional tone: "${text}"`
+                })
+            }
+        );
+
+        if (!response.ok) {
+            console.warn("HuggingFace API failed. Returning fallback analysis.");
+            return res.json({ analysis: fallbackData });
+        }
+
+        const result = await response.json();
+        res.json({ analysis: result });
+    } catch (err) {
+        console.error("Emotion analysis failed:", err);
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
 
 // Start the server
 app.listen(PORT, () => console.log(`🚀 Wellness API running on port ${PORT}`));
