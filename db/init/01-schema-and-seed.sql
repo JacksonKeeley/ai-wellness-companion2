@@ -54,3 +54,13 @@ CREATE TABLE IF NOT EXISTS journal_entries (
   mood TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- ── Emotion analysis ────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS entry_emotions (
+  id        SERIAL PRIMARY KEY,
+  entry_id  INTEGER NOT NULL
+             REFERENCES journal_entries(id)
+             ON DELETE CASCADE,
+  label     TEXT    NOT NULL,
+  score     REAL    NOT NULL  -- store as fraction (0.0–1.0); multiply by 100 in client for % if desired
+);

@@ -10,7 +10,8 @@ type JournalEntry = {
   id: number;
   entry: string;
   mood: string | null;
-  timestamp: string;    // ISO string from the server
+  timestamp: string;
+  emotions?: Emotion[];
 };
 
 type Emotion = {
@@ -42,8 +43,9 @@ export default function SmartJournal() {
             entry:     e.entry,
             mood:      e.mood,
             timestamp: e.timestamp,
+            emotions:  e.emotions || []
           }))
-        );
+        );        
       } catch (err) {
         console.error("Failed to load entries:", err);
         setEntries([]);
@@ -71,10 +73,11 @@ export default function SmartJournal() {
         entry: rec.text,
         mood: rec.mood,
         timestamp: rec.created_at,  // <— same mapping here
+        emotions: rec.emotions || []
       };
       setEntries([newEntry, ...entries]);
       setEntry(""); setMood("");
-      await analyzeEmotion(newEntry.entry);
+      await analyzeEmotion(newEntry.id, newEntry.entry);
     } catch (err) {
       console.error(err);
     } finally {
@@ -82,22 +85,27 @@ export default function SmartJournal() {
     }
   };
 
-  const analyzeEmotion = async (text: string) => {
+  const analyzeEmotion = async (entryId: number, text: string) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/emotion-analysis`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ entryId, text }),
       });
       const { analysis } = await res.json();
-      setEmotionResult(analysis[0] || []);
+  
+      const flat: Emotion[] = Array.isArray(analysis[0])
+        ? (analysis as any[]).flat()
+        : (analysis as any[]);
+  
+      setEmotionResult(flat);
     } catch {
       setEmotionResult(null);
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   return (
     <Card className="bg-white/60 backdrop-blur rounded-2xl shadow-md border border-[#D0C9E1]">
@@ -173,6 +181,7 @@ export default function SmartJournal() {
         )}
 
         {/* entries list */}
+        {entries.length != 0 && (
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Previous Entries</h3>
           <ul className="space-y-2">
@@ -189,6 +198,7 @@ export default function SmartJournal() {
             ))}
           </ul>
         </div>
+        )}
       </CardContent>
     </Card>
   );

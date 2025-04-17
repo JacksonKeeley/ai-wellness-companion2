@@ -119,19 +119,37 @@ async function listJournalEntries(req, res) {
     const { rows } = await pool.query(
       'SELECT id, text, mood, created_at FROM journal_entries ORDER BY created_at DESC'
     );
-    // Map DB fields to API response
     const entries = rows.map(r => ({
-      id: r.id,
-      entry: r.text,
-      mood: r.mood,
-      timestamp:  r.created_at.toISOString()
+      id:        r.id,
+      entry:     r.text,
+      mood:      r.mood,
+      timestamp: r.created_at.toISOString()
     }));
+
+    if (entries.length) {
+      const ids = entries.map(e => e.id);
+      const { rows: emos } = await pool.query(
+        'SELECT entry_id, label, score FROM entry_emotions WHERE entry_id = ANY($1)',
+        [ids]
+      );
+
+      const map = {};
+      emos.forEach(({ entry_id, label, score }) => {
+        (map[entry_id] ||= []).push({ label, score });
+      });
+
+      entries.forEach(e => {
+        e.emotions = map[e.id] || [];
+      });
+    }
+
     res.json({ entries });
   } catch (err) {
     console.error('List journal entries failed:', err);
     res.status(500).json({ error: 'Failed to fetch journal entries.' });
   }
 }
+
 
 async function addJournalEntry(req, res) {
   const { text, mood } = req.body;
@@ -154,12 +172,14 @@ async function addJournalEntry(req, res) {
 }
 
 async function analyzeEmotion(req, res) {
-  const { text } = req.body;
+  const { entryId, text } = req.body;
+  if (!entryId) return res.status(400).json({ error: 'Missing entryId' });
+
   const HF_TOKEN = process.env.HF_API_KEY;
-  const MODEL = 'SamLowe/roberta-base-go_emotions';
-  const fallback = [
-    [{ label: 'joy', score: 0.78 }, { label: 'love', score: 0.65 }, { label: 'neutral', score: 0.42 }]
-  ];
+  const MODEL    = 'SamLowe/roberta-base-go_emotions';
+  const fallback = [{ label: 'neutral', score: 1.0 }];
+
+  let data;
   try {
     const hfRes = await fetch(
       `https://api-inference.huggingface.co/models/${MODEL}`,
@@ -169,20 +189,54 @@ async function analyzeEmotion(req, res) {
           Authorization: `Bearer ${HF_TOKEN}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ inputs: `Analyze this journal entry's emotional tone: "${text}"` })
+        body: JSON.stringify({
+          inputs: `Analyze this journal entry's emotional tone: "${text}"`
+        })
       }
     );
-    if (!hfRes.ok) {
-      console.warn('Hugging Face API error:', hfRes.status);
-      return res.json({ analysis: fallback });
-    }
-    const data = await hfRes.json();
-    res.json({ analysis: data });
+    data = hfRes.ok ? await hfRes.json() : fallback;
   } catch (err) {
     console.error('Emotion analysis failed:', err);
-    res.status(500).json({ error: 'Internal server error.' });
+    return res.status(500).json({ error: 'External analysis failed.' });
   }
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    await client.query(
+      'DELETE FROM entry_emotions WHERE entry_id = $1',
+      [entryId]
+    );
+
+    const flat = Array.isArray(data[0]) ? data.flat() : data;
+    for (const item of flat) {
+      if (
+        !item ||
+        typeof item.label !== 'string' ||
+        typeof item.score !== 'number'
+      ) {
+        // skip any bad element
+        continue;
+      }
+      await client.query(
+        'INSERT INTO entry_emotions(entry_id, label, score) VALUES($1, $2, $3)',
+        [entryId, item.label, item.score]
+      );
+    }
+
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Failed to store emotion analysis:', err);
+    return res.status(500).json({ error: 'Could not save analysis.' });
+  } finally {
+    client.release();
+  }
+
+  res.json({ analysis: data });
 }
+
 
 // ── Start Server ────────────────────────────────────────────────────────────
 app.listen(PORT, () => {

@@ -28,11 +28,27 @@ services:
     ports:
       - "4000:4000"
     environment:
-      # tell your app how to reach Postgres
       - DATABASE_URL=postgres://appuser:apppass@postgres:5432/appdb
     depends_on:
       - postgres
     restart: always
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@domain.com
+      PGADMIN_DEFAULT_PASSWORD: supersecret
+    ports:
+      - "8080:80"
+    user: root                                 
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json  
+      - ./pgpass:/pgpass:ro                    
+
 volumes:
   pgdata:
+  pgadmin_data:
