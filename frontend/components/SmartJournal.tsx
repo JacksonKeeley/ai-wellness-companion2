@@ -10,7 +10,8 @@ type JournalEntry = {
   id: number;
   entry: string;
   mood: string | null;
-  timestamp: string;    // ISO string from the server
+  timestamp: string;
+  emotions?: Emotion[];
 };
 
 type Emotion = {
@@ -19,7 +20,7 @@ type Emotion = {
 };
 
 export default function SmartJournal() {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"; 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
   const [entry, setEntry] = useState("");
   const [mood, setMood] = useState("");
@@ -38,10 +39,11 @@ export default function SmartJournal() {
         if (!Array.isArray(list)) throw new Error("entries is not an array");
         setEntries(
           list.map((e: any) => ({
-            id:        e.id,
-            entry:     e.entry,
-            mood:      e.mood,
+            id: e.id,
+            entry: e.entry,
+            mood: e.mood,
             timestamp: e.timestamp,
+            emotions: e.emotions || []
           }))
         );
       } catch (err) {
@@ -51,9 +53,15 @@ export default function SmartJournal() {
     }
     load();
   }, [API_URL]);
-  
 
-  // Save & re‑analyze
+  // Inside your component...
+  const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+
+  const selectEntry = async (entry: JournalEntry) => {
+    setSelectedEntry(entry);
+    setEmotionResult(entry.emotions || []);
+  };
+
   const saveEntry = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!entry.trim()) return;
@@ -70,11 +78,16 @@ export default function SmartJournal() {
         id: rec.id,
         entry: rec.text,
         mood: rec.mood,
-        timestamp: rec.created_at,  // <— same mapping here
+        timestamp: rec.created_at,
+        emotions: rec.emotions || []
       };
+
+      // Add the new entry and set as selected
       setEntries([newEntry, ...entries]);
-      setEntry(""); setMood("");
-      await analyzeEmotion(newEntry.entry);
+      setSelectedEntry(newEntry);
+
+      // Analyze and update emotions immediately after adding
+      await analyzeEmotion(newEntry.id, newEntry.entry);
     } catch (err) {
       console.error(err);
     } finally {
@@ -82,22 +95,36 @@ export default function SmartJournal() {
     }
   };
 
-  const analyzeEmotion = async (text: string) => {
+  const analyzeEmotion = async (entryId: number, text: string) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/emotion-analysis`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ entryId, text }),
       });
       const { analysis } = await res.json();
-      setEmotionResult(analysis[0] || []);
-    } catch {
+
+      const flat: Emotion[] = Array.isArray(analysis[0])
+        ? (analysis as any[]).flat()
+        : (analysis as any[]);
+
+      setEmotionResult(flat);
+
+      // Update emotions in entries list
+      setEntries(prevEntries =>
+        prevEntries.map(entry =>
+          entry.id === entryId ? { ...entry, emotions: flat } : entry
+        )
+      );
+    } catch (err) {
+      console.error("Emotion analysis error:", err);
       setEmotionResult(null);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <Card className="bg-white/60 backdrop-blur rounded-2xl shadow-md border border-[#D0C9E1]">
@@ -106,7 +133,7 @@ export default function SmartJournal() {
           📓 SmartJournal
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="text-base text-slate-700">
         {/* entry form */}
         <form onSubmit={saveEntry} className="space-y-4">
           <Textarea
@@ -173,22 +200,28 @@ export default function SmartJournal() {
         )}
 
         {/* entries list */}
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Previous Entries</h3>
-          <ul className="space-y-2">
-            {entries.map(e => (
-              <li key={e.id} className="p-2 rounded-md bg-white shadow-sm">
-                <p className="text-sm text-muted-foreground mb-1">
-                  {e.mood && <><strong>Mood:</strong> {e.mood} — </>}
-                  {new Date(e.timestamp).toLocaleString()}
-                </p>
-                <p className="whitespace-pre-wrap text-slate-800">
-                  {e.entry}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {entries.length != 0 && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-2">Previous Entries</h3>
+            <ul className="space-y-2">
+              {entries.map(e => (
+                <li
+                  key={e.id}
+                  className={`p-2 rounded-md cursor-pointer ${selectedEntry?.id === e.id ? "bg-slate-200" : "bg-white"} shadow-sm`}
+                  onClick={() => selectEntry(e)}
+                >
+                  <p className="text-sm text-muted-foreground mb-1">
+                    {e.mood && <><strong>Mood:</strong> {e.mood} — </>}
+                    {new Date(e.timestamp).toLocaleString()}
+                  </p>
+                  <p className="whitespace-pre-wrap text-slate-800">
+                    {e.entry}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

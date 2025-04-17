@@ -1,0 +1,16 @@
+{
+    "Servers": {
+      "1": {
+        "Name":        "appdb",
+        "Group":       "Databases",
+        "Host":        "postgres",
+        "Port":        5432,
+        "MaintenanceDB":"appdb",
+        "Username":    "appuser",
+        "PassFile": "/pgpass",
+        "SavePassword": true,
+        "SSLMode":     "prefer"
+      }
+    }
+  }
+  
