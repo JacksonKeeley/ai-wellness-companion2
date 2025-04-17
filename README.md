@@ -40,6 +40,7 @@ An advanced full-stack app designed to promote emotional wellness with **motivat
    - Frontend → http://localhost:3000  
    - Backend  → http://localhost:4000  
    - Postgres → port 5432 (service name: `postgres`)
+   - pgAdmin  → port 8080 (service name: `pgAdmin`)
 
 5. **Shut down**  
    ```bash
@@ -78,7 +79,8 @@ An advanced full-stack app designed to promote emotional wellness with **motivat
 - PostgreSQL  
 
 ### Dev / Ops
-- Docker & Docker Compose  
+- Docker & Docker Compose
+- pgAdmin
 
 ---
 
