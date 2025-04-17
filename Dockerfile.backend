@@ -1,0 +1,21 @@
+FROM node:18-alpine AS deps
+WORKDIR /app
+
+# install dependencies
+COPY backend/package.json backend/package-lock.json ./
+RUN npm ci --omit=dev
+
+# copy code and run
+FROM node:18-alpine
+WORKDIR /app
+
+# pull in just the prod node_modules
+COPY --from=deps /app/node_modules ./node_modules
+
+# copy your backend sources
+COPY backend/ ./
+
+# expose your Express port
+EXPOSE 4000
+
+CMD ["node", "wellnessApp.js"]
