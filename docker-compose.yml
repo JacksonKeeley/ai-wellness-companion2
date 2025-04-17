@@ -8,6 +8,18 @@ services:
     depends_on:
       - backend
     restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: appdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
 
   backend:
     build:
@@ -15,6 +27,12 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "4000:4000"
-    #volumes:
-    #  - ./data:/app/data # Persist SQLite data
+    environment:
+      # tell your app how to reach Postgres
+      - DATABASE_URL=postgres://appuser:apppass@postgres:5432/appdb
+    depends_on:
+      - postgres
     restart: always
+
+volumes:
+  pgdata:

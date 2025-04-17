@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:23-alpine AS builder
 WORKDIR /app
 
 # Install deps
@@ -10,7 +10,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Runtime stage
-FROM node:18-alpine AS runner
+FROM node:23-alpine AS runner
 WORKDIR /app
 
 # Pull in just prod deps
