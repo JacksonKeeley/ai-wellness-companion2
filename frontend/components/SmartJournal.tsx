@@ -140,11 +140,13 @@ export default function SmartJournal() {
             placeholder="Write your thoughts..."
             value={entry}
             onChange={e => setEntry(e.target.value)}
+            className="shadow-sm border"
           />
           <Input
             placeholder="Mood (optional)"
             value={mood}
             onChange={e => setMood(e.target.value)}
+            className="shadow-sm border"
           />
           <Button type="submit" disabled={loading}>
             {loading ? "Analyzing..." : "Add Entry"}
