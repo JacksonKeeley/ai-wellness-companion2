@@ -132,7 +132,7 @@ export default function SmartJournal() {
                 AI Emotion Analysis
               </h3>
               <div className="space-y-2">
-                {emotionResult.map((e) => {
+                {emotionResult.slice(0, 5).map((e) => {
                   const colorMap: Record<string, string> = {
                     joy: "bg-lime-100 text-lime-800",
                     sadness: "bg-blue-100 text-blue-800",
