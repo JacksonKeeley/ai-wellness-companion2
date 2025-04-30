@@ -1,8 +1,8 @@
-import Motivation from "@/components/Motivation";
-import Affirmation from "@/components/Affirmation";
-import BreathingExercise from "@/components/BreathingExercise";
+import Motivation from "@/components/Sidebar";
+import Affirmation from "@/components/Sidebar";
+import BreathingExercise from "@/components/Sidebar";
+import Analytics from "@/components/Sidebar";
 import SmartJournal from "@/components/SmartJournal";
-import Analytics from "@/components/Analytics";
 
 export default function Home() {
   return (
