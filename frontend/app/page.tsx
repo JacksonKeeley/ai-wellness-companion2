@@ -3,6 +3,7 @@ import Affirmation from "@/components/Affirmation";
 import BreathingExercise from "@/components/BreathingExercise";
 import SmartJournal from "@/components/SmartJournal";
 import Analytics from "@/components/Analytics";
+import StudyTimer from "@/components/StudyTimer";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
             <Affirmation />
             <BreathingExercise />
             <Analytics />
+            <StudyTimer />
           </div>
         </div>
       </div>
