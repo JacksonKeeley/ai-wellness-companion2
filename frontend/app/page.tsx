@@ -1,8 +1,8 @@
-import Motivation from "@/components/Sidebar";
-import Affirmation from "@/components/Sidebar";
-import BreathingExercise from "@/components/Sidebar";
-import Analytics from "@/components/Sidebar";
+import CardGen from "@/components/CardGen";
+import BreathingExercise from "@/components/BreathingExercise";
 import SmartJournal from "@/components/SmartJournal";
+import Analytics from "@/components/Analytics";
+import { Card } from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -20,8 +20,16 @@ export default function Home() {
         {/* Right Side: Fixed height */}
         <div className="flex flex-col gap-6 w-full max-w-[40%] h-full">
           <div className="flex flex-col gap-6 h-full">
-            <Motivation />
-            <Affirmation />
+            <CardGen
+              title="🌟 Motivation"
+              fetchUrl="http://localhost:4000/motivation"
+              fallbackMessage="Failed to load motivation."
+            />
+            <CardGen
+              title="💬 Daily Affirmation"
+              fetchUrl="http://localhost:4000/affirmation"
+              fallbackMessage="Failed to load affirmation."
+            />
             <BreathingExercise />
             <Analytics />
           </div>
