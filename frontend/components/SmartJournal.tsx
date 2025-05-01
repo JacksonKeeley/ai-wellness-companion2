@@ -30,9 +30,16 @@ export default function SmartJournal() {
   const [emotionResult, setEmotionResult] = useState<Emotion[] | null>(null);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-  
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     async function load() {
+      if (!mounted || !user) return;
+  
       try {
         const token = localStorage.getItem('token');
         const res = await fetch(`${API_URL}/journal_entries`, {
@@ -42,7 +49,6 @@ export default function SmartJournal() {
           },
         });
         const payload = await res.json();
-        console.log('🎯 raw journal entries:', payload);
         const list = payload.entries;
         if (!Array.isArray(list)) throw new Error('entries is not an array');
         setEntries(
@@ -60,10 +66,10 @@ export default function SmartJournal() {
         setEntries([]);
       }
     }
+  
     load();
-  }, [API_URL]);  
+  }, [API_URL, user, mounted]);  
 
-  // Inside your component...
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
 
   const selectEntry = async (entry: JournalEntry) => {
@@ -143,7 +149,8 @@ export default function SmartJournal() {
     }
   };
 
-
+  if (!mounted) return null;
+  if (!user) return <div>Loading user...</div>;
   return (
     <Card className="bg-white/60 backdrop-blur rounded-2xl shadow-md border border-[#D0C9E1]">
       <CardHeader>

@@ -47,7 +47,7 @@ app.get('/affirmation', sendRandomAffirmation);
 app.get('/breathing', sendBreathingGuide);
 app.get('/analytics', sendAnalytics);
 app.post('/reset-analytics', resetAnalyticsData);
-app.get('/journal_entries', listJournalEntries);
+app.get('/journal_entries', authenticateToken, listJournalEntries);
 app.post('/journal_entries', authenticateToken, addJournalEntry);
 app.post('/emotion-analysis', authenticateToken, analyzeEmotion);
 app.post('/signup', signupUser);
@@ -125,15 +125,16 @@ async function listJournalEntries(req, res) {
   try {
     const { userId } = req.user;
     const { rows } = await pool.query(
-      'SELECT id, text, mood, created_at FROM journal_entries WHERE user_id = $1 ORDER BY created_at DESC',
+      'SELECT id, text, mood, created_at, user_id FROM journal_entries WHERE user_id = $1 ORDER BY created_at DESC',
       [userId]
     );
 
-    const entries = rows.map((r) => ({
+    const entries = rows.map(r => ({
       id: r.id,
       entry: r.text,
       mood: r.mood,
       timestamp: r.created_at.toISOString(),
+      user_id: r.user_id,
     }));
 
     if (entries.length) {

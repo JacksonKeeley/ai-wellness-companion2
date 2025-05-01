@@ -18,7 +18,7 @@ export default function Home() {
       <main className="relative max-w-screen-xl mx-auto px-4 py-10">
         <Button
           onClick={logout}
-          className="absolute top-4 right-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          className="absolute top-4 right-4 px-4 py-2"
         >
           Logout
         </Button>
