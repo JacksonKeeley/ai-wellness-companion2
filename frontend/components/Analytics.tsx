@@ -9,7 +9,13 @@ export default function Analytics() {
   const [analytics, setAnalytics] = useState<AnalyticsItem[] | null>(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/analytics`)
+    const token = localStorage.getItem('token');
+    fetch(`${API_URL}/analytics`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
       .then(res => res.json())
       .then(data => setAnalytics(data.usage))    // usage is now AnalyticsItem[]
       .catch(() => setAnalytics(null));

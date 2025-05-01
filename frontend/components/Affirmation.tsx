@@ -4,9 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Affirmation() {
   const [affirmation, setAffirmation] = useState("Loading...");
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch("http://localhost:4000/affirmation")
+    fetch("http://localhost:4000/affirmation", {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
       .then(res => res.json())
       .then(data => setAffirmation(data.affirmation))
       .catch(() => setAffirmation("Failed to load affirmation."));

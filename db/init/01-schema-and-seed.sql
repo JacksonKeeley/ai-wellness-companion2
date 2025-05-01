@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS journal_entries (
   id SERIAL PRIMARY KEY,
   text TEXT NOT NULL,
   mood TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  user_id INTEGER REFERENCES users(id)
 );
 
 -- ── Emotion analysis ────────────────────────────────────────────────────────

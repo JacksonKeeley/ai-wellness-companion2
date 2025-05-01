@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useAuth } from '@/context/AuthContext';
 
 type JournalEntry = {
   id: number;
   entry: string;
   mood: string | null;
   timestamp: string;
+  user_id: number;
   emotions?: Emotion[];
 };
 
@@ -27,32 +29,39 @@ export default function SmartJournal() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [emotionResult, setEmotionResult] = useState<Emotion[] | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const { user } = useAuth();
+  
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`${API_URL}/journal_entries`);
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${API_URL}/journal_entries`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const payload = await res.json();
-        console.log("🎯 raw journal entries:", payload);
-        // pull out the array
+        console.log('🎯 raw journal entries:', payload);
         const list = payload.entries;
-        if (!Array.isArray(list)) throw new Error("entries is not an array");
+        if (!Array.isArray(list)) throw new Error('entries is not an array');
         setEntries(
           list.map((e: any) => ({
             id: e.id,
             entry: e.entry,
             mood: e.mood,
             timestamp: e.timestamp,
-            emotions: e.emotions || []
+            user_id: e.user_id,
+            emotions: e.emotions || [],
           }))
         );
       } catch (err) {
-        console.error("Failed to load entries:", err);
+        console.error('Failed to load entries:', err);
         setEntries([]);
       }
     }
     load();
-  }, [API_URL]);
+  }, [API_URL]);  
 
   // Inside your component...
   const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
@@ -68,9 +77,13 @@ export default function SmartJournal() {
 
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch(`${API_URL}/journal_entries`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,  
+        },
         body: JSON.stringify({ text: entry, mood }),
       });
       const rec = await res.json();
@@ -79,6 +92,7 @@ export default function SmartJournal() {
         entry: rec.text,
         mood: rec.mood,
         timestamp: rec.created_at,
+        user_id: rec.user_id,
         emotions: rec.emotions || []
       };
 
@@ -98,9 +112,13 @@ export default function SmartJournal() {
   const analyzeEmotion = async (entryId: number, text: string) => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch(`${API_URL}/emotion-analysis`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ entryId, text }),
       });
       const { analysis } = await res.json();
@@ -249,21 +267,27 @@ export default function SmartJournal() {
           <div className="mt-6">
             <h3 className="text-lg font-semibold mb-2">Previous Entries</h3>
             <ul className="space-y-2">
-              {entries.map(e => (
-                <li
-                  key={e.id}
-                  className={`p-2 rounded-md cursor-pointer ${selectedEntry?.id === e.id ? "bg-slate-200" : "bg-white"} shadow-sm`}
-                  onClick={() => selectEntry(e)}
-                >
-                  <p className="text-sm text-muted-foreground mb-1">
-                    {e.mood && <><strong>Mood:</strong> {e.mood} — </>}
-                    {new Date(e.timestamp).toLocaleString()}
-                  </p>
-                  <p className="whitespace-pre-wrap text-slate-800">
-                    {e.entry}
-                  </p>
-                </li>
-              ))}
+              {entries
+                .filter((e) => e.user_id === user?.userId)
+                .map((e) => (
+                  <li
+                    key={e.id}
+                    className={`p-2 rounded-md cursor-pointer ${
+                      selectedEntry?.id === e.id ? 'bg-slate-200' : 'bg-white'
+                    } shadow-sm`}
+                    onClick={() => selectEntry(e)}
+                  >
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {e.mood && (
+                        <>
+                          <strong>Mood:</strong> {e.mood} —{' '}
+                        </>
+                      )}
+                      {new Date(e.timestamp).toLocaleString()}
+                    </p>
+                    <p className="whitespace-pre-wrap text-slate-800">{e.entry}</p>
+                  </li>
+                ))}
             </ul>
           </div>
         )}

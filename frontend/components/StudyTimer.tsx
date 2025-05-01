@@ -1,7 +1,10 @@
 'use client';
+
 import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
 
 function formatTime(sec: number) {
   const minutes = Math.floor(sec / 60);
@@ -10,11 +13,11 @@ function formatTime(sec: number) {
 }
 
 export default function StudyTimer() {
+  const { user } = useAuth();
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [reminder, setReminder] = useState('');
   const [logs, setLogs] = useState<string[]>([]);
-  const [role, setRole] = useState<'viewer' | 'admin'>('viewer');
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -52,11 +55,9 @@ export default function StudyTimer() {
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
-  const switchRole = () => setRole((prev) => (prev === 'admin' ? 'viewer' : 'admin'));
-
   const downloadLogs = () => {
-    if (role !== 'admin') {
-      alert('Access denied. Only admins can download logs.');
+    if (user?.role !== 'admin') {
+      toast.error('Access denied. Only admins can download logs.');
       return;
     }
     const blob = new Blob([logs.join('\n')], { type: 'text/plain' });
@@ -81,12 +82,18 @@ export default function StudyTimer() {
           <Button onClick={stopTimer} disabled={!isRunning}>Stop</Button>
           <Button onClick={clearTimer} variant="destructive">End Timer</Button>
         </div>
-        <div className="mt-6 text-sm">
-          <strong>Current Role:</strong> {role}<br />
-          <Button onClick={switchRole} className="mt-2">Switch Role</Button>
-          <Button onClick={downloadLogs} disabled={role !== 'admin'} className="mt-2 ml-2">
-            Download Logs
-          </Button>
+        <div className="mt-6 text-sm space-y-2">
+          <div>
+            <strong>Current Role:</strong> {user?.role || 'unknown'}
+          </div>
+          {user?.role === 'admin' && (
+            <Button
+              onClick={downloadLogs}
+              className="mt-2"
+            >
+              Download Logs
+            </Button>
+          )}
         </div>
         <div className="mt-6 text-left">
           <h2 className="text-lg font-semibold text-center">📋 Session Log</h2>

@@ -13,7 +13,12 @@ export default function BreathingExercise() {
   const [exercise, setExercise] = useState<BreathingData | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/breathing")
+    const token = localStorage.getItem('token');
+    fetch("http://localhost:4000/breathing", {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then(res => res.json())
       .then(data => setExercise(data.exercise))
       .catch(() => setExercise(null));
