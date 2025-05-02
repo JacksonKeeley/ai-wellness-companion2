@@ -4,6 +4,7 @@ import CardGen from "@/components/CardGen";
 //import Affirmation from "@/components/Affirmation";
 import BreathingExercise from "@/components/BreathingExercise";
 import SmartJournal from "@/components/SmartJournal";
+import WellnessTip from "@/components/wellness-tip"; 
 import Analytics from "@/components/Analytics";
 import StudyTimer from "@/components/StudyTimer";
 import StayFit from "@/components/StayFit";
@@ -49,6 +50,7 @@ export default function Home() {
                 fallbackMessage="Failed to load affirmation." 
                 responseField="affirmation"
               />
+              <WellnessTip />
               <BreathingExercise />
               <Analytics />
               <StudyTimer />
