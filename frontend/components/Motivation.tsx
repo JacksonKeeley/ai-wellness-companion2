@@ -5,11 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function Motivation() {
   const [quote, setQuote] = useState("Loading...");
 
-  useEffect(() => {
+  const fetchQuote = () => {
+    setQuote("Loading...");
     fetch("http://localhost:4000/motivation")
-      .then(res => res.json())
-      .then(data => setQuote(data.message))
+      .then((res) => res.json())
+      .then((data) => setQuote(data.message))
       .catch(() => setQuote("Failed to load motivation."));
+  };
+
+  useEffect(() => {
+    fetchQuote();
   }, []);
 
   return (
@@ -18,7 +23,13 @@ export default function Motivation() {
         <CardTitle className="text-xl font-semibold text-[#575C75]">🌟 Motivation</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-base text-slate-700">{quote}</p>
+        <p className="text-base text-slate-700 mb-4">{quote}</p>
+        <button
+          onClick={fetchQuote}
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+        >
+          Refresh
+        </button>
       </CardContent>
     </Card>
   );
