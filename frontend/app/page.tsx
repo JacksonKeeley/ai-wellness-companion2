@@ -1,6 +1,7 @@
 import Motivation from "@/components/Motivation";
 import Affirmation from "@/components/Affirmation";
 import BreathingExercise from "@/components/BreathingExercise";
+import WellnessTip from "@/components/wellness-tip"; 
 import SmartJournal from "@/components/SmartJournal";
 import Analytics from "@/components/Analytics";
 import StudyTimer from "@/components/StudyTimer";
@@ -23,6 +24,7 @@ export default function Home() {
           <div className="flex flex-col gap-6 h-full">
             <Motivation />
             <Affirmation />
+            <WellnessTip />
             <BreathingExercise />
             <Analytics />
             <StudyTimer />

@@ -14,6 +14,20 @@ INSERT INTO quotes (message) VALUES
 ('Your potential is endless.')
 ON CONFLICT DO NOTHING;
 
+-- ── Wellness Tips ─────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS wellness_tips (
+  id   SERIAL PRIMARY KEY,
+  message TEXT NOT NULL
+);
+
+INSERT INTO wellness_tips (message) VALUES
+('Take a 5-minute walk in nature'),
+('Practice gratitude journaling'),
+('Hydrate with a glass of water'),
+('Stretch your body for 2 minutes'),
+('Call a friend for a quick chat')
+ON CONFLICT DO NOTHING;
+
 -- ── Affirmations ─────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS affirmations (
   id   SERIAL PRIMARY KEY,

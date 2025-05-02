@@ -40,6 +40,7 @@ app.get('/ping-db', pingDatabase);
 app.get('/motivation', sendRandomQuote);
 app.get('/affirmation', sendRandomAffirmation);
 app.get('/breathing', sendBreathingGuide);
+app.get('/wellness-tips', sendWellnessTip);
 app.get('/analytics', sendAnalytics);
 app.post('/reset-analytics', resetAnalyticsData);
 app.get('/journal_entries', listJournalEntries);
@@ -47,6 +48,18 @@ app.post('/journal_entries', addJournalEntry);
 app.post('/emotion-analysis', analyzeEmotion);
 
 // ── Handlers ─────────────────────────────────────────────────────────────────
+
+async function sendWellnessTip(req, res) {
+  try {
+    const { rows } = await pool.query(
+      'SELECT message FROM wellness_tips ORDER BY RANDOM() LIMIT 1'
+    );
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Fetch wellness tip failed:', err);
+    res.status(500).json({ error: "Failed to fetch wellness tip" });
+  }
+}
 
 async function pingDatabase(req, res) {
   try {
