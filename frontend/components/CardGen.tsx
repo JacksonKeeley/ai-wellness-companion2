@@ -2,21 +2,21 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface Card2Gen {
-    title: string;
-    fetchUrl: string;
-    fallbackMessage: string;
+interface Card2Gen { //Common method to generating cards (Affirmation and Motivation)
+    title: string; //Text on box
+    fetchUrl: string; //URL that produces output
+    fallbackMessage: string; //Error message if output not found
     responseField?: string; //Optional field to specify response field
 }
 
 export default function CardGen({ title, fetchUrl, fallbackMessage, responseField = "message" }: Card2Gen) {
-  const [message, setMessage] = useState("Loading...");
+  const [message, setMessage] = useState("Loading..."); 
   
-  const fetchMessage = () => {
+  const fetchMessage = () => { //Get messages from Affirmation or Motivation
     setMessage("Loading...");
     fetch(fetchUrl)
       .then((res) => res.json())
-      .then((data) => setMessage(data.message || data[responseField] || fallbackMessage)) // Response field gets message
+      .then((data) => setMessage(data.message || data[responseField] || fallbackMessage)) // Response field gets message. This is a catch-all.
       .catch(() => setMessage(fallbackMessage));
   };
 
