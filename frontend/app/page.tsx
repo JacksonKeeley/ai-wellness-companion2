@@ -1,7 +1,7 @@
 'use client';
-
-import Motivation from "@/components/Motivation";
-import Affirmation from "@/components/Affirmation";
+import CardGen from "@/components/CardGen";
+//import Motivation from "@/components/Motivation";
+//import Affirmation from "@/components/Affirmation";
 import BreathingExercise from "@/components/BreathingExercise";
 import SmartJournal from "@/components/SmartJournal";
 import Analytics from "@/components/Analytics";
@@ -36,8 +36,16 @@ export default function Home() {
           {/* Right Side: Fixed height */}
           <div className="flex flex-col gap-6 w-full max-w-[40%] h-full">
             <div className="flex flex-col gap-6 h-full">
-              <Motivation />
-              <Affirmation />
+              <CardGen
+                title="🌟 Motivation"
+                fetchUrl="http://localhost:4000/motivation"
+                fallbackMessage="Failed to load motivation."
+              />
+              <CardGen
+                title="💬 Affirmation"
+                fetchUrl="http://localhost:4000/affirmation"
+                fallbackMessage="Failed to load affirmation." 
+              />
               <BreathingExercise />
               <Analytics />
               <StudyTimer />
