@@ -11,7 +11,17 @@ INSERT INTO quotes (message) VALUES
 ('Every day is a second chance.'),
 ('You are stronger than you think.'),
 ('Keep going, you’re doing great!'),
-('Your potential is endless.')
+('Your potential is endless.'),
+('You’ve got this!'),
+('Make today count.'),
+('Start where you are.'),
+('Small progress is progress.'),
+('Turn setbacks into comebacks.'),
+('Push yourself; no one else will.'),
+('Success starts with self-discipline.'),
+('Believe, act, achieve.'),
+('Stay curious, stay driven.'),
+('Your effort defines your future.')
 ON CONFLICT DO NOTHING;
 
 -- ── Affirmations ─────────────────────────────────────────────────────
