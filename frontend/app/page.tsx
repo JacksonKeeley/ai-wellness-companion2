@@ -6,6 +6,7 @@ import BreathingExercise from "@/components/BreathingExercise";
 import SmartJournal from "@/components/SmartJournal";
 import Analytics from "@/components/Analytics";
 import StudyTimer from "@/components/StudyTimer";
+import StayFit from "@/components/StayFit";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ export default function Home() {
               <BreathingExercise />
               <Analytics />
               <StudyTimer />
+              <StayFit />
             </div>
           </div>
         </div>

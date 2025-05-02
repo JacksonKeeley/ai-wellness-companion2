@@ -38,6 +38,20 @@ INSERT INTO affirmations (text) VALUES
 ('I am growing and improving every day.')
 ON CONFLICT DO NOTHING;
 
+-- ── Fitness Goals ────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS fitness_goals (
+  id SERIAL PRIMARY KEY,
+  label TEXT NOT NULL
+);
+
+INSERT INTO fitness_goals (label) VALUES
+  ('Walk 5,000 steps'),
+  ('Drink 8 cups of water'),
+  ('Stand up every hour'),
+  ('Stretch for 5 minutes'),
+  ('Get 7+ hours of sleep');
+
+
 -- ── Breathing exercises ────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS breathing_exercises (
   id    SERIAL PRIMARY KEY,

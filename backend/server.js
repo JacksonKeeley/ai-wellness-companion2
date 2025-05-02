@@ -47,6 +47,7 @@ app.get('/affirmation', sendRandomAffirmation);
 app.get('/breathing', sendBreathingGuide);
 app.get('/analytics', sendAnalytics);
 app.post('/reset-analytics', resetAnalyticsData);
+app.get('/fitness-goals', getFitnessGoals);
 app.get('/journal_entries', authenticateToken, listJournalEntries);
 app.post('/journal_entries', authenticateToken, addJournalEntry);
 app.post('/emotion-analysis', authenticateToken, analyzeEmotion);
@@ -118,6 +119,18 @@ async function resetAnalyticsData(req, res) {
   } catch (err) {
     console.error('Reset analytics failed:', err);
     res.status(500).json({ error: 'Failed to reset analytics.' });
+  }
+}
+
+async function getFitnessGoals(req, res) {
+  try {
+    const { rows } = await pool.query(
+      'SELECT id, label FROM fitness_goals ORDER BY id'
+    );
+    res.json({ goals: rows });
+  } catch (err) {
+    console.error('Failed to fetch fitness goals:', err);
+    res.status(500).json({ error: 'Failed to fetch fitness goals.' });
   }
 }
 
