@@ -40,11 +40,13 @@ export default function Home() {
                 title="🌟 Motivation"
                 fetchUrl="http://localhost:4000/motivation"
                 fallbackMessage="Failed to load motivation."
+                responseField="motivation"
               />
               <CardGen
                 title="💬 Affirmation"
                 fetchUrl="http://localhost:4000/affirmation"
                 fallbackMessage="Failed to load affirmation." 
+                responseField="affirmation"
               />
               <BreathingExercise />
               <Analytics />

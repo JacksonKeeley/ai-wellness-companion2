@@ -6,16 +6,17 @@ interface Card2Gen {
     title: string;
     fetchUrl: string;
     fallbackMessage: string;
+    responseField?: string; //Optional field to specify response field
 }
 
-export default function CardGen({ title, fetchUrl, fallbackMessage }: Card2Gen) {
+export default function CardGen({ title, fetchUrl, fallbackMessage, responseField = "message" }: Card2Gen) {
   const [message, setMessage] = useState("Loading...");
   
   const fetchMessage = () => {
     setMessage("Loading...");
     fetch(fetchUrl)
       .then((res) => res.json())
-      .then((data) => setMessage(data.message))
+      .then((data) => setMessage(data.message || data[responseField] || fallbackMessage)) // Response field gets message
       .catch(() => setMessage(fallbackMessage));
   };
 
