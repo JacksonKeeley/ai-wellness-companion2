@@ -17,7 +17,7 @@ export default function WellnessTip() {
     const now = Date.now();
     const storedClicks = JSON.parse(
       localStorage.getItem('wellnessTipsClicks') || '[]'
-    ).filter((timestamp: number) => now - timestamp < 600000); // 10 minutes
+    ).filter((timestamp: number) => now - timestamp < 10000); // 10 minutes
     
     return 2 - storedClicks.length;
   };
@@ -71,7 +71,7 @@ export default function WellnessTip() {
         </button>
         {!canClick && (
           <p className="text-sm text-muted-foreground">
-            Tips refresh in {Math.ceil((600000 - (Date.now() - JSON.parse(localStorage.getItem('wellnessTipsClicks') || '[]')[0])) / 60000)} minutes
+            Tips refresh in {Math.ceil((10000 - (Date.now() - JSON.parse(localStorage.getItem('wellnessTipsClicks') || '[]')[0])) / 1000)} seconds
           </p>
         )}
       </CardContent>
